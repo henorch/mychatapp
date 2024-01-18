@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Chatme now</title>
+    <style>
+        body {
+            margin: 0;
+            padding-bottom: 6rem;
+        }
+
+        #form {
+            background: rgba(0, 0, 0, 0.15);
+            padding: 0.25rem;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            height: 3rem;
+            box-sizing: border-box;
+            backdrop-filter: blur(10px);
+        }
+
+        #input {
+            border: none;
+            padding: 0 1rem;
+            flex-grow: 1;
+            border-radius: 2rem;
+            margin: 0.25rem;
+        }
+
+        #input:focus {
+            outline: none;
+        }
+
+        #form>button {
+            background: #333;
+            border: none;
+            padding: 0 1rem;
+            margin: 0.25rem;
+            border-radius: 3px;
+            outline: none;
+            color: #fff
+        }
+
+        #messages {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #messages>l1 {
+            padding: 0.25rem 2rem;
+            max-width: 80px;
+            margin-top: 5px;
+            border-radius: 5px;
+            background: rgba(177, 159, 159, 0.15);
+        }
+
+        messages>li>msg {
+            max-width: 100%;
+        }
+
+        messages>li>sender {
+            max-width: 100%;
+        }
+
+        #messages>li:nth-child(odd) {
+            background: rgba(247, 111, 111, 0.15);
+        }
+
+        #header {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+
+        }
+
+        #activity {
+            background: blue;
+            color: white;
+            padding: 0.4rem;
+        }
+    </style>
+
+
+</head>
+
+<body onload=isTyping()>
+    <div id="header">
+        <span id="activity"></span>
+    </div>
+
+    <ul id="messages"></ul>
+    <form id="form" action="">
+        <input id="input" autocomplete="off"><button type="submit">Send</button>
+    </form>
+
+    <script src="socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+        var messages = document.getElementById('messages');
+        var form = document.getElementById("form");
+        var input = document.getElementById("input");
+        var activity = document.getElementById('activity')
+
+        function isTyping() {
+            activity.textContent = `last seen ${new Date()}`
+        }
+
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (input.value) {
+                socket.emit('chat message', input.value);
+                input.value = '';
+            }
+        });
+
+        socket.on('chat message', function (messageFormat) {
+            var item = document.createElement('li');
+            item.textContent = messageFormat.message;
+            item.style.padding = "0.5rem 2rem"
+            item.style.margin = "2px";
+            messages.appendChild(item);
+            window.scrollTo(0, document.body.scrollHeight);
+        })
+
+        // //on user connect
+        socket.on('user connected', function (msg) {
+            //to define nother panel entire for this one
+            activity.textContent = msg;
+            window.scrollTo(0, document.body.scrollHeight);
+        })
+
+
+    </script>
+</body>
+
+</html>

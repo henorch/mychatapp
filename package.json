@@ -1,0 +1,16 @@
+{
+  "name": "chatme",
+  "version": "1.0.0",
+  "description": "The chat app",
+  "main": "index.js",
+  "author": "Tunde Henorch",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemon": "^3.0.1",
+    "socket.io": "^4.7.1"
+  },
+  "scripts": {
+    "start": "nodemon src/index.js"
+  }
+}
