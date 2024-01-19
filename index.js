@@ -1,3 +1,4 @@
+const { log } = require('console');
 const express = require('express');
 const http = require('http')
 const { Server } = require("socket.io");
@@ -28,11 +29,16 @@ io.on('connection', (socket) => {
     })
 
     socket.on('chat message', (msg) => {
+        this.id == socket.id;
+
         var messageFormat = {
             'message': msg,
-
+            'time': new Date().getSeconds(),
+            'sender': socket.id
         }
         io.emit('chat message', messageFormat)
+        console.log(messageFormat)
+        console.log(msg);
     })
 
 

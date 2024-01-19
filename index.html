@@ -45,29 +45,40 @@
         }
 
         #messages {
-            list-style-type: none;
             margin: 0;
+            min-width: 100%;
             padding: 0;
+            white-space: pre-wrap;
+            background-color: transparent;
         }
 
-        #messages>l1 {
+        #messages>li {
             padding: 0.25rem 2rem;
-            max-width: 80px;
             margin-top: 5px;
-            border-radius: 5px;
-            background: rgba(177, 159, 159, 0.15);
+            min-width: 80%;
+            width: 80%;
         }
 
-        messages>li>msg {
+        #messages>li>msg {
             max-width: 100%;
         }
 
-        messages>li>sender {
-            max-width: 100%;
+
+        #messages>li>#sender {
+            background-color: rgba(247, 111, 111, 0.15);
+            width: fit-content;
+            height: fit-content;
+            text-align: right;
+            border-radius: 15px 0px 16px;
         }
 
-        #messages>li:nth-child(odd) {
-            background: rgba(247, 111, 111, 0.15);
+        #messages>li>#other {
+            background: rgba(196, 204, 99, 0.15);
+            max-width: 80%;
+            min-width: fit-content;
+            height: fit-content;
+            float: right;
+            border-radius: 15px 0px 16px;
         }
 
         #header {
@@ -94,7 +105,9 @@
         <span id="activity"></span>
     </div>
 
-    <ul id="messages"></ul>
+    <div id="messages">
+    </div>
+
     <form id="form" action="">
         <input id="input" autocomplete="off"><button type="submit">Send</button>
     </form>
@@ -118,13 +131,23 @@
                 socket.emit('chat message', input.value);
                 input.value = '';
             }
+
         });
 
-        socket.on('chat message', function (messageFormat) {
+        socket.on('chat message', function ({ message, sender, time }) {
+
             var item = document.createElement('li');
-            item.textContent = messageFormat.message;
-            item.style.padding = "0.5rem 2rem"
+            var itemsender = document.createElement('p')
+            item.style.listStyleType = "none"
+            itemsender.textContent = socket.id === sender ? "you" : sender;
+            item.style.background = socket.id === sender ? "blue" : "yellow";
+            item.style.width = "fit-content"
+            item.style.float = socket.id === sender ? "right" : "left";
+            item.style.borderRadius = socket.id === sender ? "15px 0px 15px" : "0px 15px 0px";
+            item.textContent = message;
+            item.style.padding = "0.5rem 2rem";
             item.style.margin = "2px";
+            item.appendChild(itemsender);
             messages.appendChild(item);
             window.scrollTo(0, document.body.scrollHeight);
         })
