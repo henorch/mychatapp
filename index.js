@@ -37,8 +37,6 @@ io.on('connection', (socket) => {
             'sender': socket.id
         }
         io.emit('chat message', messageFormat)
-        console.log(messageFormat)
-        console.log(msg);
     })
 
 
